@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
-// import logo from './logo.svg'
 import './App.css'
 
 class App extends Component {
@@ -16,11 +15,14 @@ class App extends Component {
   componentDidMount(){
     const instance = this
     axios.get('https://yts.am/api/v2/list_movies.json').then(result=>{
+      console.log(result.data)
       const movies = {}
       result.data.data.movies.forEach(movie => {
         movies[movie.id] = movie
       })
       instance.setState({movies})
+    }).catch(result=>{
+      console.log(result.response.status, result.response.data)
     })
   }
 
@@ -37,7 +39,7 @@ class App extends Component {
       <ul>
         {movie.torrents.map(torrent=>(
           <li key={torrent.hash}>
-            <Link to={'/watch/' + movie.slug + '/?url=' + torrent.url}>
+            <Link to={'/watch/' + movie.slug + '/?url=' + encodeURIComponent(torrent.url)}>
               {torrent.quality}
               {' '}
               {torrent.size} 
